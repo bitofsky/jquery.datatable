@@ -16,56 +16,16 @@ JavaScript 실행 도중 Private Function Scope(ex. closure) 에 있는 데이�
 ### 샘플
 실제 동작 샘플은 [[여기 JsFiddle]](http://jsfiddle.net/hbsto/uLRGK/) 을 참고 하세요.
 ```javascript
-var data = window.data = {
-
-    // Array
-    arraaType     : [
-        'ArrayIdx 0','ArrayIdx 1','ArrayIdx 2','ArrayIdx 3',
-    ],
-
-    // Boolean
-    booleanTrue   : true,
-    booleanFalse  : false,
-
-    // HTML DOM Elements
-    domElement    : document.createElement('textarea'),
-
-    // Function
-    functionType  : function(){
-        alert('Function!!');
-    },
-
-    // jQuery Object
-    jqueryObject  : $('<span>Span Tag</span>'),
-
-    // Null
-    nullType      : null,
-
-    // Number
-    numberType    : 551123.4535,
-
-    // PlainObject
-    plainObject   : {
-        subkeyA   : 123,
-        subkeyB   : 'abc',
-        subkeyC   : ['X','Y','Z']
-    },
-
-    // String
-    stringType    : 'String ABCD',
-
-    // Undefined
-    undefinedType : undefined
-
+var data = {
+    DoubleClickMe : 'Edit Me'
 };
 
-var oDataTable = $.dataTable(data,{modifier:true,keyEdit:true}),
-    oButton    = $('<button type=button />').text('Show Current Data').click(function(){
-        console.dir(data);
-        alert('Executed console.dir(data);\n\nSee debugger or window.data');
+var oDataTable = $.dataTable(data,{modifier:true}),
+    oButton    = $('<button type=button />').text('Alert Msg').click(function(){
+        alert( data.DoubleClickMe );
     });
 
-$('BODY').append( oButton, '<br/><br/>', oDataTable );​
+$('BODY').append( oButton, '<br/><br/>', oDataTable );
 ```
 
 ***
