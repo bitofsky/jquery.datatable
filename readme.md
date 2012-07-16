@@ -16,7 +16,7 @@ JavaScript 실행 도중 Private Function Scope(ex. closure) 에 있는 데이�
 ### 샘플
 실제 동작 샘플은 [[여기 JsFiddle]](http://jsfiddle.net/hbsto/uLRGK/) 을 참고 하세요.
 ```javascript
-var data = {
+var data = window.data = {
 
     // Array
     arraaType     : [
@@ -64,8 +64,6 @@ var oDataTable = $.dataTable(data,{modifier:true,keyEdit:true}),
         console.dir(data);
         alert('Executed console.dir(data);\n\nSee debugger or window.data');
     });
-
-window.data = data;
 
 $('BODY').append( oButton, '<br/><br/>', oDataTable );​
 ```
