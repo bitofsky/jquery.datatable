@@ -2,7 +2,8 @@
  * DataTable for JavaScript Data Editing
  *                         jQuery Plugin
  *
- * jQuery 1.5 or higher
+ * jQuery 1.4 or higher
+ * jQueryUI 1.8 or higher
  *
  * @author bitofsky@neowiz.com 2012.07.13
  * @encoding UTF-8
