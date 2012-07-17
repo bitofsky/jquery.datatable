@@ -14,7 +14,7 @@ JavaScript 실행 도중 Private Function Scope(ex. closure) 에 있는 데이�
 ***
 
 ### 샘플
-실제 동작 샘플은 [[여기 JsFiddle]](http://jsfiddle.net/hbsto/uLRGK/) 을 참고 하세요.
+실제 동작 샘플은 [[여기 JsFiddle]](http://jsfiddle.net/hbsto/GsCRn/) 을 참고 하세요.
 ```javascript
 var data = {
     DoubleClickMe : 'Edit Me'
@@ -32,7 +32,7 @@ $('BODY').append( oButton, '<br/><br/>', oDataTable );
 
 ### 필수
 1. jQuery 1.4
-2. jQUeryUI 1.8
+2. jQueryUI 1.8
 3. HTML5 browser
 
 ***
