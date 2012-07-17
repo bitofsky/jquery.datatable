@@ -61,6 +61,7 @@
 
     'css'          : {
       'table' : {
+        'border-collapse': 'separate',
         'border-spacing' : '5px 0',
         'width'          : '100%'
       },
