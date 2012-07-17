@@ -30,6 +30,11 @@
     'editEvent'    : 'dblclick',
 
     /**
+     * @var {array} option.allowPath=[] 수정할 데이터 경로 명시. 없을 경우 전체. 경로가 명시된 경우 해당 데이터에만 수정 기능이 동작.
+     */
+    'allowPath'    : [],
+
+    /**
      * @var {number} option.depth=0 몇 depth 까지 기본 노출할지에 대한 설정. 0은 모두 노출
      */
     'depth'        : 0,
@@ -102,7 +107,7 @@
    * @param {plainObject|array} data
    * @option {plainObject} option=DEFAULT_OPTION
    */
-  $.dataTable = function( data, option, currentDepth ){
+  $.dataTable = function( data, option, currentDepth, currentPath ){
 
     // dataTable 은 PlainObject 또는 Array 가 아니면 구성을 할 수 없다.
     if( !checkTableType( data ) ) return null;
@@ -110,10 +115,16 @@
     var opt = $.extend(true, {}, DEFAULT_OPTION, option);
 
     currentDepth = +currentDepth || 0;
+    currentPath  = currentPath || '';
 
     var table = $( TAG.table ).addClass('ui-tabs ui-widget ui-widget-content ui-corner-all').css( opt.css.table ),
         thead = $( TAG.thead ),
         tbody = $( TAG.tbody );
+
+    if( opt.allowPath.length && !opt.__allowPath ){
+      opt.__allowPath = {};
+      for( var i in opt.allowPath ) opt.__allowPath[ opt.allowPath[i] ] = true;
+    }
 
     if( !opt.depth || opt.depth > currentDepth ){
       renderTable();
@@ -246,7 +257,7 @@
       // 재귀 DataTable 을 랜더링 한다.
       if( checkTableType( value ) ){
 
-        o_cell.dataTable( value, option, currentDepth+1 );
+        o_cell.dataTable( value, option, currentDepth+1, currentPath+'.'+key );
 
       }
       // PlainObject 가 아닌 Object 는 Element 로 본다.
@@ -281,7 +292,13 @@
       // 더블클릭으로 데이터를 수정할 수 있도록 한다.
       function setModifier(){
 
-        o_key.bind( opt.editEvent, function(){
+        // option.allowPath 가 설정된 경우 현재 키가 설정된 path 인지 체크 한다.
+        if( opt.__allowPath && !opt.__allowPath[ currentPath+'.'+key ] ){
+          o_key.addClass('ui-state-disabled');
+          return;
+        }
+
+        o_key.removeClass('ui-state-disabled').bind( opt.editEvent, function(){
 
           // selection 삭제
           document.getSelection().removeAllRanges();
