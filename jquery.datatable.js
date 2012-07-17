@@ -60,12 +60,12 @@
     'allowElement' : false,
 
     'css'          : {
-      'table' : {
+      'table'   : {
         'border-collapse': 'separate',
         'border-spacing' : '5px 0',
         'width'          : '100%'
       },
-      'key'   : {
+      'key'     : {
         'padding'        : '0 5px 0 5px',
         'vertical-align' : 'top',
         'text-align'     : 'right',
@@ -88,7 +88,8 @@
     select   : '<select class=ui-state-default />',
     option   : '<option/>',
     number   : '<input type=number class=ui-state-default step=1 min=0 required />',
-    button   : '<button type=button />'
+    button   : '<button type=button />',
+    caption  : '<caption/>'
   };
 
   $.fn.dataTable = function(){
@@ -108,7 +109,7 @@
 
     var opt = $.extend(true, {}, DEFAULT_OPTION, option);
 
-    currentDepth = +currentDepth || 1;
+    currentDepth = +currentDepth || 0;
 
     var table = $( TAG.table ).addClass('ui-tabs ui-widget ui-widget-content ui-corner-all').css( opt.css.table ),
         thead = $( TAG.thead ),
@@ -136,12 +137,19 @@
 
       $( thead ).add( tbody ).empty();
 
+      if( opt.title && currentDepth == 0 ){
+
+        $( TAG.caption ).text( opt.title ).addClass('ui-state-default ui-corner-all').appendTo( table );
+
+      }
+
       // Key 추가 기능 버튼
       if( opt.modifier && opt.keyEdit ){
 
         $( TAG.tr ).append(
           $( TAG.td ).attr('colspan', 2).append( $( TAG.button ).text('Add Key').button({icons:{primary:'ui-icon-plusthick'}}).click( fn_addKey ) )
         ).appendTo( thead );
+
       }
 
       // 각 Key 별 Row 처리
