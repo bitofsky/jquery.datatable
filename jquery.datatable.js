@@ -5,6 +5,7 @@
  * jQuery 1.4 or higher
  * jQueryUI 1.8 or higher
  *
+ * @version 1.0
  * @author bitofsky@neowiz.com 2012.07.13
  * @encoding UTF-8
  */
@@ -25,14 +26,34 @@
     'modifier'     : false,
 
     /**
+     * @var {array} option.showPath=[] 보여줄 데이터 경로 명시. 명시된 경로의 데이터 노출.
+     */
+    'showPath'     : [],
+
+    /**
+     * @var {array} option.hidePath=[] 보여주지 않을 데이터 경로 명시. 명시된 경로의 데이터 미노출
+     */
+    'hidePath'     : [],
+
+    /**
      * @var {string} option.editEvent='dblclick' 셀 에디터 이벤트 설정
      */
     'editEvent'    : 'dblclick',
 
     /**
-     * @var {array} option.allowPath=[] 수정할 데이터 경로 명시. 없을 경우 전체. 경로가 명시된 경우 해당 데이터에만 수정 기능이 동작.
+     * @var {array} option.editAllowPath=[] 수정할 데이터 경로 명시. 명시된 경로의 데이터에만 수정 기능이 동작.
      */
-    'allowPath'    : [],
+    'editAllowPath': [],
+
+    /**
+     * @var {array} option.editDenyPath=[] 수정을 금지할 데이터 경로 명시. 명시된 경로의 데이터에는 수정 기능이 미동작.
+     */
+    'editDenyPath' : [],
+
+    /**
+     * @var {plainObject} option.pathName={} 경로의 노출 이름을 명시. Key=경로, Value=이름
+     */
+    'pathName'     : {},
 
     /**
      * @var {number} option.depth=0 몇 depth 까지 기본 노출할지에 대한 설정. 0은 모두 노출
@@ -63,6 +84,11 @@
      * @var {boolean} option.allowElement 데이터 중 Element 가 있는 경우 처리 방법. true=append(), false=toString()
      */
     'allowElement' : false,
+
+    /**
+     * @var {string} opt.delimiter
+     */
+    'delimiter'    : '\\R\\',
 
     'css'          : {
       'table'   : {
@@ -112,6 +138,9 @@
     // dataTable 은 PlainObject 또는 Array 가 아니면 구성을 할 수 없다.
     if( !checkTableType( data ) ) return null;
 
+    /**
+     * @var opt DEFAULT_OPTION
+     */
     var opt = $.extend(true, {}, DEFAULT_OPTION, option);
 
     currentDepth = +currentDepth || 0;
@@ -120,11 +149,6 @@
     var table = $( TAG.table ).addClass('ui-tabs ui-widget ui-widget-content ui-corner-all').css( opt.css.table ),
         thead = $( TAG.thead ),
         tbody = $( TAG.tbody );
-
-    if( opt.allowPath.length && !opt.__allowPath ){
-      opt.__allowPath = {};
-      for( var i in opt.allowPath ) opt.__allowPath[ opt.allowPath[i] ] = true;
-    }
 
     if( !opt.depth || opt.depth > currentDepth ){
       renderTable();
@@ -166,8 +190,16 @@
       // 각 Key 별 Row 처리
       for( var key in data ){
 
+        // opt.showPath 가 명시된 상태에서 현재 Key 가 리스트에 없는 경우 노출 무시
+        if( checkPath('showPath', key) === false ) continue;
+
+        // opt.hidePath 가 명시된 상태에서 현재 Key 가 리스트에 있는 경우 노출 무시
+        if( checkPath('hidePath', key) === true ) continue;
+
+        var name = getKeyName( key );
+
         var tr_line  = $( TAG.tr ).appendTo( tbody ),
-            td_key   = $( TAG.td ).text( key ).appendTo( tr_line ).addClass('ui-state-default ui-corner-all').css( opt.css.key ),
+            td_key   = $( TAG.td ).text( name ).appendTo( tr_line ).addClass('ui-state-default ui-corner-all').css( opt.css.key ),
             td_value = $( TAG.td ).appendTo( tr_line );
 
         // value 랜더링
@@ -292,8 +324,14 @@
       // 더블클릭으로 데이터를 수정할 수 있도록 한다.
       function setModifier(){
 
-        // option.allowPath 가 설정된 경우 현재 키가 설정된 path 인지 체크 한다.
-        if( opt.__allowPath && !opt.__allowPath[ currentPath+'.'+key ] ){
+        // opt.editAllowPath 가 명시된 상태에서 현재 Key 가 리스트에 없는 경우 수정 기능 비활성화
+        if( checkPath('editAllowPath', key) === false ){
+          o_key.addClass('ui-state-disabled');
+          return;
+        }
+
+        // opt.editDenyPath 가 명시된 상태에서 현재 Key 가 리스트에 있는 경우 수정 기능 비활성화
+        if( checkPath('editDenyPath', key) === true ){
           o_key.addClass('ui-state-disabled');
           return;
         }
@@ -421,6 +459,29 @@
         drawCell( key, o_key, o_cell );
       }
 
+    }
+
+    function getKeyPath( key ){
+      return currentPath+'.'+key;
+    }
+
+    function getKeyName( key ){
+
+      var path = getKeyPath( key );
+
+      return opt.pathName[path] || key;
+
+    }
+
+    function checkPath( type, key ){
+      var o    = opt[type],
+          path = getKeyPath( key );
+      if( !o.length ) return undefined;
+      for( var i in o ){
+        // console.dir( type + ' ? ' + path + ' indexof ' + o[i] + ' = ' + path.indexOf( o[i] ) );
+        if( path.indexOf( o[i] ) == 0 ) return true;
+      }
+      return false;
     }
 
   };
