@@ -85,11 +85,6 @@
      */
     'allowElement' : false,
 
-    /**
-     * @var {string} opt.delimiter
-     */
-    'delimiter'    : '\\R\\',
-
     'css'          : {
       'table'   : {
         'border-collapse': 'separate',
