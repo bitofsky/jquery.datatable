@@ -258,7 +258,8 @@
 
       if( !confirm('Remove Key - ' + key + '\nContinue?') ) return;
 
-      delete data[key];
+      if( $.type(data) === 'array' ) data.splice(key, 1);
+      else delete data[key];
 
       renderTable();
 
@@ -495,5 +496,7 @@
     if( whitespace ) str = str.replace(/\s/g, '&nbsp;');
     return str;
   }
+
+  define('jquery.datatable', ['jquery'], function(){ return $.dataTable; });
 
 })(jQuery, this, this.document);
