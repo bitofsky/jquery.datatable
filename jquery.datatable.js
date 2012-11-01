@@ -231,7 +231,7 @@
         buttons: {
           'Add': function(){
 
-            if( !i_key[0].checkValidity() ) return alert( i_key[0].validationMessage );
+            if( i_key[0].checkValidity && !i_key[0].checkValidity() ) return alert( i_key[0].validationMessage );
 
             try{
               var value = JSON.parse( ta_value.val() || null );
