@@ -389,7 +389,7 @@
               // 숫자형 입력
               case selectedType == 'number':
                 var i_number = $( TAG.number ).val( def ).appendTo( d_form ).width('100%');
-                fn_val = function(){ return i_number[0].valueAsNumber || 0; };
+                fn_val = function(){ return +i_number.val() || 0; };
                 break;
 
               // 함수형 입력. 함수는 특성상 Global scope 를 대상으로 하는 함수만 정의 가능 하다.
